@@ -5,6 +5,8 @@ namespace TextMap_SR
 {
     public class FileParser
     {
+        private readonly bool includeHash64;
+
         public Dictionary<long,Textmap> ParseTextmapFile(string filepath)
         {
             Dictionary<long, Textmap> result = new Dictionary<long, Textmap>();
@@ -51,6 +53,10 @@ namespace TextMap_SR
                             {
                                 Hash = reader.ReadSignedVarInt()
                             };
+                            if (includeHash64)
+                            {
+                                textID.Hash64 = reader.ReadVarInt();
+                            }
                             field.SetValue(textmap, textID);
                             break;
 
@@ -61,6 +67,11 @@ namespace TextMap_SR
                 bitIndex++;
             }
             return textmap;
+        }
+
+        public FileParser(bool _includeHash64)
+        {
+            this.includeHash64 = _includeHash64;
         }
     }
 
@@ -74,5 +85,6 @@ namespace TextMap_SR
     public class TextID
     {
         public long Hash;
+        public ulong Hash64;
     }
 }
